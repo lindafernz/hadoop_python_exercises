@@ -18,13 +18,25 @@ hrValCountDict = {}
 
 def findMaxCountForActiveHour():
 	maxVal = 0
+	outHrVal = {}
 	 
 	for hrVal, count in hrValCountDict.iteritems():
 		if maxVal < count:
-			resultHr = hrVal
 			maxVal = count
+	
+	# now that we have the max value between all hours in the student's active hour list
+	# populate the list for all the hour values when the count is that max value
+	for hrVal, count in hrValCountDict.iteritems():
+		if maxVal == count:
+			outHrVal[hrVal] = count
+	
 
-	return resultHr, maxVal
+	return outHrVal
+
+def printResults(authId, hrCountDict):
+	for activeHr, postCount in hrCountDict.iteritems():
+	        print authId, "\t", activeHr, "\t", postCount
+		
 
 for line in sys.stdin:
     data_mapped = line.strip().split("\t")
@@ -36,8 +48,9 @@ for line in sys.stdin:
 
     # done processing all values of thisKey, so make the decisions and reset variables to move onto to next key
     if oldKey and oldKey != thisKey:
-	activeHr, postCount = findMaxCountForActiveHour()
-        print oldKey, "\t", activeHr, "\t", postCount
+	activeHrCountDict = findMaxCountForActiveHour()
+        #print oldKey, "\t", activeHr, "\t", postCount
+	printResults(oldKey, activeHrCountDict)
 	
         oldKey = thisKey;
 	hrValCountDict.clear()
@@ -48,8 +61,9 @@ for line in sys.stdin:
 
 # calculations for the last key
 if oldKey != None:
-	activeHr, postCount = findMaxCountForActiveHour()
-        print oldKey, "\t", activeHr, "\t", postCount
+	activeHrCountDict = findMaxCountForActiveHour()
+        #print oldKey, "\t", activeHr, "\t", postCount
+	printResults(oldKey, activeHrCountDict)
 
 
 
